@@ -11,7 +11,7 @@
 @endsection
 
 @section('javasc')
-    <script>
+    <!-- <script>
         $(document).ready(function(){
             $("#button").click(function(){
                 var tebakan = $("#tebakan").val();
@@ -24,5 +24,5 @@
                 }       
             }) 
         })
-    </script>
+    </script> -->
 @endsection
