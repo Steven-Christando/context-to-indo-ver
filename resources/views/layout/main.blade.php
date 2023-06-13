@@ -80,7 +80,7 @@
             <input class="form-control" id="tebakan" style="width:30%;height:30%" type="text" placeholder="Masukkan sebuah kata">
             <button type="button" id="button" class="btn btn-primary mb-3 ms-2">Confirm identity</button>
         </div>
-        <div class="answers d-flex justify-content-center mt-3">
+        <div class="answers d-flex justify-content-center mt-3 mb-3">
             <ul class="list-group" id="list_jawaban">
             </ul>
         </div>
