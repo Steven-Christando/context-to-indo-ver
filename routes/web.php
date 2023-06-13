@@ -15,7 +15,7 @@ use App\Http\Controllers\API;
 */
 
 Route::get('/', function () {
-    return view('home',["title" => "main"]);
+    return view('home',["title" => "Konteks"]);
 });
 
 Route::get('/init', [API::class, 'init']);

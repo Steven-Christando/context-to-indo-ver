@@ -33,21 +33,18 @@
         #button {
             background-color: #1F2131 !important;
             color: #FFFFFF;
-            border-radius: 50px !important;
         }
 
-        #button:hover,
-        #button:focus,
-        #button:active {
+        #button:hover{
             background-color: #FFFFFF !important;
             color: #1F2131 !important;
-            border: 2px solid #1F2131 !important;
+            border: 1px solid #1F2131 !important;
             transition: 790ms;
         }
 
         #list_jawaban {
             border-radius: 10px !important;
-            min-width: 50vw;
+            min-width: 100%;
         }
 
         .kuning {
@@ -69,20 +66,24 @@
 </head>
 
 <body>
-    <div class="containter justify-content-center mt-5">
-        <h1 class="text-center" id="judul">CONTEXTO</h1>
+    <div class="containter justify-content-center mt-5 mx-3">
+        <h1 class="text-center" id="judul">KONTEKS</h1>
         <div class="answers d-flex justify-content-center mt-3">
-            <h1 class="me-5 p-2 kuning">tipen</h1>
-            <h1 class="me-5 p-2 ijo">susin</h1>
-            <h1 class="me-5 p-2 biru">tuny</h1>
+            <h1 class="mx-4 p-2 kuning">tipen</h1>
+            <h1 class="mx-4 p-2 ijo">susin</h1>
+            <h1 class="mx-4 p-2 biru">tuny</h1>
         </div>
-        <div class="d-flex justify-content-center mt-3">
-            <input class="form-control" id="tebakan" style="width:30%;height:30%" type="text" placeholder="Masukkan sebuah kata">
-            <button type="button" id="button" class="btn btn-primary mb-3 ms-2">Confirm identity</button>
-        </div>
-        <div class="answers d-flex justify-content-center mt-3">
-            <ul class="list-group" id="list_jawaban">
-            </ul>
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="d-flex justify-content-center mt-3">
+                    <input class="form-control rounded-pill" id="tebakan" type="text" placeholder="Masukkan sebuah kata">
+                    <button type="button" id="button" class="btn btn-primary rounded-pill ms-2">HINT</button>
+                </div>
+                <div class="answers d-flex justify-content-center mt-3">
+                    <ul class="list-group" id="list_jawaban">
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </body>
@@ -95,13 +96,24 @@
         first = true;
 
         $("#button").click(function() {
-            var tebakan = $("#tebakan").val();
-            if (tebakan == "") {
-                console.log("jangan kosong kakak")
-            } else {
-                $("#tebakan").val("");
-                tebak(tebakan);
-            }
+            //show hint
+            $.ajax({
+                method: "GET",
+                url: "/hint/25",
+                success(response) {
+                    rank = response.data.rank;
+                    rand = Math.floor((Math.random() * 15) + 10)
+                    hint = rank[rand][0];
+
+                    tebak(hint);
+
+                    console.log("tebak");
+                },
+                error(jqXHR, textStatus, errorThrown) {
+                    alert_error(jqXHR.responseJSON.message);
+                    console.log("error");
+                }
+            });
         });
 
         $('#tebakan').keypress(function (e) {
@@ -126,6 +138,16 @@
             icon: 'error',
             title: msg,
             timer: 1500,
+            timerProgressBar: true,
+        });
+    }
+    
+    function alert_warning(msg){
+        let timerInterval
+        Swal.fire({
+            icon: 'warning',
+            title: msg,
+            timer: 2000,
             timerProgressBar: true,
         });
     }
@@ -162,7 +184,7 @@
 
     function insertTebakan(word, rank){
         insert = false;
-        var jawaban = '<li class="list-group-item list-group-item-success mt-3 oren animate__animated animate__backInLeft">' + word + '<span class="float-end rank">' + rank + '</span> </li>'
+        var jawaban = '<li class="list-group-item list-group-item-success rounded-pill mt-3 oren border-3 border-black animate__animated animate__backInLeft">' + word + '<span class="float-end rank">' + rank + '</span> </li>'
 
         if(!first){
             //loop for search right position
@@ -170,7 +192,14 @@
                 currRank = parseInt($(this).text());
                 if(rank < currRank){
                     console.log("loop");
+                    remove_border();
                     $(jawaban).insertBefore($(this).parent());
+
+                    insert = true;
+                    return false;
+
+                }else if (rank == currRank){    //ranknya sama == katanya sama
+                    alert_warning(word + " sudah ada");
                     insert = true;
                     return false;
                 }
@@ -180,9 +209,48 @@
         //last rank
         if(first || !insert){
             console.log("last");
-            $("#list_jawaban").append(jawaban)
+            remove_border();
+            $("#list_jawaban").append(jawaban);
         }
         first = false;
+
+        if(rank == 1){
+            win();
+        }
+    }
+
+    function remove_border(){
+        $(".border-3").removeClass("border-3");
+        $(".border-black").removeClass("border-black");
+    }
+
+    function win(){
+        Swal.fire({
+            title: 'Kamu berhasil!',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Random Kata Lagi'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //regenerate
+                $.ajax({
+                    method: "GET",
+                    url: "/regenerate",
+                    success(response) {
+                        console.log("regenerate");
+                        $("#list_jawaban").html("");
+
+                        alert_warning("Berhasil Merandom Kata");
+                    },
+                    error(jqXHR, textStatus, errorThrown) {
+                        alert_error(jqXHR.responseJSON.message);
+                        console.log("error");
+                    }
+                });
+            }
+        })
     }
 </script>
 

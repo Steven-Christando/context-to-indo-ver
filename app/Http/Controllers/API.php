@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 
 class API extends Controller
 {
-    public $url = "https://e884-35-199-4-30.ngrok-free.app";
+    public $url = "https://9043-34-168-40-164.ngrok-free.app";
 
     //
 
