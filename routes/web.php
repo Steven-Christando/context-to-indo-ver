@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home',["title" => "main"]);
 });
+
+Route::get('/init', [API::class, 'init']);
+Route::get('/word/{word}', [API::class, 'word']);
+Route::get('/rank/{word}', [API::class, 'rank']);
+Route::get('/regenerate', [API::class, 'regenerate']);
+Route::get('/answer', [API::class, 'answer']);
+Route::get('/hint/{top}', [API::class, 'hint']);

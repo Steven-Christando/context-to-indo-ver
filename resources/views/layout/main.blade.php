@@ -91,12 +91,12 @@
         //load library
         $.ajax({
             method: "GET",
-            url: base_url + "/",
+            url: "/word/budaya",
             // headers: {
             //     'ngrok-skip-browser-warning':'blablabla',
             // },
             success(response) {
-                alert(response);
+                alert(response.message);
             },
             error(jqXHR, textStatus, errorThrown) {
                 alert(jqXHR.responseJSON);
