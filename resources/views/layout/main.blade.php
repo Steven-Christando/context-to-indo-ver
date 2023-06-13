@@ -85,24 +85,12 @@
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function() {
-        base_url = "https://d9b5-34-145-179-89.ngrok-free.app";
-        //load library
-        $.ajax({
-            method: "GET",
-            url: "/word/budaya",
-            // headers: {
-            //     'ngrok-skip-browser-warning':'blablabla',
-            // },
-            success(response) {
-                alert(response.message);
-            },
-            error(jqXHR, textStatus, errorThrown) {
-                alert(jqXHR.responseJSON);
-                console.log("error");
-            }
-        });
+
+        first = true;
 
         $("#button").click(function() {
             var tebakan = $("#tebakan").val();
@@ -110,11 +98,90 @@
                 console.log("jangan kosong kakak")
             } else {
                 $("#tebakan").val("");
-                var jawaban = '<li class="list-group-item list-group-item-success mt-3 oren">' + tebakan + '</li>'
-                $("#list_jawaban").append(jawaban)
+                tebak(tebakan);
             }
-        })
-    })
+        });
+
+        $('#tebakan').keypress(function (e) {
+            var key = e.which;
+            if(key == 13)  // the enter key code
+            {
+                var tebakan = $("#tebakan").val();
+                if (tebakan == "") {
+                    console.log("jangan kosong kakak")
+                } else {
+                    $("#tebakan").val("");
+                    tebak(tebakan);
+                }
+            }
+        });  
+
+    });
+
+    function alert_error(msg){
+        let timerInterval
+        Swal.fire({
+            icon: 'error',
+            title: msg,
+            timer: 1500,
+            timerProgressBar: true,
+        });
+    }
+
+    function tebak(word){
+        $.ajax({
+            method: "GET",
+            url: "/word/"+word,
+            success(response) {
+                //cari ranknya
+                $.ajax({
+                    method: "GET",
+                    url: "/rank/"+word,
+                    success(response) {
+                        rank = response.data.rank;
+                        
+                        insertTebakan(word, rank);
+
+                        console.log("tebak");
+                    },
+                    error(jqXHR, textStatus, errorThrown) {
+                        alert_error(jqXHR.responseJSON.message);
+                        console.log("error");
+                    }
+                });
+
+            },
+            error(jqXHR, textStatus, errorThrown) {
+                alert_error(jqXHR.responseJSON.message);
+                console.log("error");
+            }
+        });
+    }
+
+    function insertTebakan(word, rank){
+        insert = false;
+        var jawaban = '<li class="list-group-item list-group-item-success mt-3 oren">' + word + '<span class="float-end rank">' + rank + '</span> </li>'
+
+        if(!first){
+            //loop for search right position
+            $(".rank").each(function(i, obj){
+                currRank = parseInt($(this).text());
+                if(rank < currRank){
+                    console.log("loop");
+                    $(jawaban).insertBefore($(this).parent());
+                    insert = true;
+                    return false;
+                }
+            });
+        }
+        
+        //last rank
+        if(first || !insert){
+            console.log("last");
+            $("#list_jawaban").append(jawaban)
+        }
+        first = false;
+    }
 </script>
 
 </html>
