@@ -79,7 +79,7 @@
                     <input class="form-control rounded-pill" id="tebakan" type="text" placeholder="Masukkan sebuah kata">
                     <button type="button" id="button" class="btn btn-primary rounded-pill ms-2">HINT</button>
                 </div>
-                <div class="answers d-flex justify-content-center mt-3">
+                <div class="answers d-flex justify-content-center my-3">
                     <ul class="list-group" id="list_jawaban">
                     </ul>
                 </div>
