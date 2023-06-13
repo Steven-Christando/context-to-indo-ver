@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
     <title>{{ $title }}</title>
     <style>
         body {
@@ -160,7 +162,7 @@
 
     function insertTebakan(word, rank){
         insert = false;
-        var jawaban = '<li class="list-group-item list-group-item-success mt-3 oren">' + word + '<span class="float-end rank">' + rank + '</span> </li>'
+        var jawaban = '<li class="list-group-item list-group-item-success mt-3 oren animate__animated animate__backInLeft">' + word + '<span class="float-end rank">' + rank + '</span> </li>'
 
         if(!first){
             //loop for search right position
